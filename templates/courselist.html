@@ -1,0 +1,12 @@
+{% extends 'home.html' %}
+{% block courselist %}
+<table>
+{% for course in courses %}
+<tr>
+	<td>{{course['name']}}</td>
+	<td>{{course['url']}}</td>
+	<td>{{course['description']}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
