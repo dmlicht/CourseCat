@@ -1,6 +1,6 @@
 #! usr/local/bin/python
 from coursecat import app, db
-from coursecat.models import Course
+from coursecat.models import Course, Topics
 from flask.ext.wtf import Form, TextField, ValidationError, Required
 from flask import render_template, request, redirect, url_for
 
@@ -12,6 +12,11 @@ class SubmitForm(Form):
 def home():
     form = SubmitForm()
     return render_template('courselist.html', courses=Course.query.all(), form=form)
+
+@app.route('/topics')
+def topics():
+    return render_template('topics.html', topics=Topics.query.all())
+    
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
