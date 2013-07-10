@@ -1,6 +1,6 @@
-{% extends 'home.html' %}
-{% block courselist %}
-<table>
+{% extends 'layout.html' %}
+{% block content %}
+<table class="table table-bordered table-striped table-hover">
 {% for course in courses %}
 <tr>
 	<td>{{course.name}}</td>

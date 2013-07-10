@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block content %}
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <td>name</td>
+        <td>description</td>
+    </thead>
+    {% for topic in topics %}
+    <tr>
+	    <td>{{topic.name}}</td>
+	    <td>{{topic.description}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Cat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }} " rel="stylesheet" media="screen">
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/jquery.js') }}" ></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <div class="container">
+        <a href="{{url_for('home')}}"><h1>Course Cat</h1></a>
+        <p class="lead">Welcome to the universe of knowledge!</p>
+        </br>   
+        {% include 'course_add_form.html' %}
+        {% block content %} {% endblock %} 
+    </div>
+</body>
+</html>

@@ -11,7 +11,12 @@ class SubmitForm(Form):
 @app.route('/')
 def home():
     form = SubmitForm()
-    return render_template('courselist.html', courses=Course.query.all(), form=form)
+    return render_template('courses.html', courses=Course.query.all(), form=form)
+
+@app.route('/topics')
+def topics():
+    form = SubmitForm()
+    return render_template('topics.html', topics=Topic.query.all(), form=form)
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
