@@ -28,11 +28,11 @@ def create_and_add_course(num=-1):
 	)
 	db.session.add(new_course)
 
-def create_and_add_topic(subject):
+def create_and_add_topic(name):
 	"""initializes topics to filler text
 	if no number given, random number chose for topic"""
 	new_topic = Topic(
-			subject = "topic_subject_%s" % subject 
+			name=name
 	)
 	db.session.add(new_topic)
 
