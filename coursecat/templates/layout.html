@@ -10,8 +10,8 @@
     <script src="{{ url_for('static', filename='js/jquery.js') }}" ></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <div class="container">
-        <h1>welcome to the universe of knowledge!</h1>
-        <p class="lead"> learn anything, from anywhere</p>
+        <a href="{{url_for('home')}}"><h1>Course Cat</h1></a>
+        <p class="lead">Welcome to the universe of knowledge!</p>
         </br>   
         {% include 'course_add_form.html' %}
         {% block content %} {% endblock %} 
