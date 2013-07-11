@@ -1,16 +1,7 @@
-<form class="form-horizontal well" action="/courses/add" method="POST">
-  	<fieldset>
-   		<legend>Suggest a course!</legend>
-   		<div class="control-group">
-   			<label class="control-label">{{form.name.description}}</label>
-   			{{form.name}}
-   		</div>
-   		<div class="control-group">
-    		<label class="control-label">{{form.url.description}}</label>
-   			{{form.url}}
-    	</div>
-   	</fieldset>
-    <div class="form-actions">
-    <button name="action_save" type="submit" class="btn btn-primary">submit!</button>
-    </div>
+<form class="form-search well" action="/courses/add" method="POST">
+   	<legend>Suggest a course!</legend>
+   	{{form.name}}
+   	{{form.url}}
+    {{form.description}}
+    <button name="action_save" type="submit" class="btn btn-success">submit!</button>
 </form>
