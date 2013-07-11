@@ -3,5 +3,8 @@
 .metadata
 *~
 *.db
+*.swp
 .idea/
 scratch*
+test_cat.py
+ipython_imports.py
