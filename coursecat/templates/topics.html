@@ -7,7 +7,7 @@
     </thead>
     {% for topic in topics %}
     <tr>
-	    <td>{{topic.name}}</td>
+        <td><a href="{{url_for('topic', topic_name=topic.name)}}" >{{topic.name}}</a></td>
 	    <td>{{topic.description}}</td>
     </tr>
     {% endfor %}
