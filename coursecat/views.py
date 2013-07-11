@@ -22,8 +22,19 @@ def topics():
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
     form = SubmitForm()
-    topic = Topic.query.filter_by(name=topic_name).first() #should only have one
-    return render_template('courses.html', courses = topic.courses, form=form)
+    topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
+    courses = topics.courses
+    for course in courses:
+        course.score = Score.query.filter_by(course=course.name, topic=topic_name).first().score
+    return render_template('courses.html', courses = courses, form=form )
+
+#@app.route('/courses/<course_name>')
+#def course(course_name):
+#    course = Course.query.filter_by(name=course_name).first()
+#    scores = []
+#    for topic in course.topics:
+#        scores.append(Score.query.filter_by(course=course.name, topic=topic.name))
+#    return render_template('course_info.html', topics = course.topics, scores = scores)
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
