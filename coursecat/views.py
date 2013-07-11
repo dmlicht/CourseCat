@@ -1,14 +1,16 @@
 #! usr/local/bin/python
 from coursecat import app, db
 from coursecat.models import Course, Topic, Score
-from flask.ext.wtf import Form, TextField, ValidationError, Required
+from flask.ext.wtf import Form, TextField, ValidationError, Required, DataRequired
+from flask.ext.wtf.html5 import URLField
 from flask import render_template, request, redirect, url_for
 
 DEFAULT_SCORE = 0
 
 class SubmitForm(Form):
-    name = TextField('Name', description='Short title of course/tutorial')
-    url = TextField('URL', description='Where can the course/tutorial be found on the web?')
+    name = TextField('Name', default="Name")
+    url = URLField('URL', default="Url")
+    description = TextField('URL', default="Description")
 
 @app.route('/')
 def home():
