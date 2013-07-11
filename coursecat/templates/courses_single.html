@@ -1,13 +1,5 @@
-{% extends 'layout.html' %}
-{% block content %}
-{% if topic %} <h1> <a href="{{url_for('topics')}}"> Topics </a> / {{topic.name}} </h1> {% endif %}
-<table class="table table-bordered table-striped table-hover">
-{% for course in courses %}
-<tr>
-	<td>{{course.name}}</td>
-	<td>{{course.url}}</td>
-	<td>{{course.description}}</td>
-</tr>
+
+
 
 <form class="form-horizontal well" action="{{url_for('view_course', course_name=course.name)}}" method="POST">
     <div class="form-actions">
@@ -16,8 +8,3 @@
 		<input type="hidden" name="vote" value={{request.form['vote']}} />
     </div>
 </form>
-
-
-{% endfor %}
-</table>
-{% endblock %}

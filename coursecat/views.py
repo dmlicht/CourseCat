@@ -39,28 +39,26 @@ def topic(topic_name):
 #        scores.append(Score.query.filter_by(course=course.name, topic=topic.name))
 #    return render_template('course_info.html', topics = course.topics, scores = scores)
 
-@app.route("/courses/<topic_name>/<course_name>", methods = ["GET", "POST"])
-def vote(topic_name, course_name):
+@app.route("/courses/<course_name>", methods = ["GET", "POST"])
+def view_course(course_name):
     form = SubmitForm()
     course = Course.query.filter_by(name=course_name).first_or_404()
-    topic = Topic.query.filter_by(name=topic_name).first_or_404()
+    topic = course.topics[0]
     score_obj = Score.query.filter_by(course=course.name, topic=topic.name).first()
-    print 'just voted'
-    print request.method
     if request.method == "POST":
-        print 'requesting'
-        button = request.form['vote']
-        if button == 'upvote': 
+        button_pressed = request.form['vote']
+        if button_pressed == 'upvote': 
             score_obj.score += 1
-        elif button == 'downvote':
+        elif button_pressed == 'downvote':
             score_obj.score -= 1
         else:
             print "there was a problem :("
     course.score = score_obj.score
     print score_obj.score
     db.session.commit()
+    print request.form.get("vote", "None provided")
+    return render_template("courses.html", courses = [course], topic = topic, form = form)
 
-    return render_template("courses.html", courses = [course], form=form)
 
 
 @app.route('/courses/add', methods=["GET","POST"])

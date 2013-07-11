@@ -43,3 +43,4 @@ class Score(db.Model):
     course = db.Column(db.String(140), primary_key=True)
     topic = db.Column(db.String(140), primary_key=True)
     score = db.Column(db.Integer)
+    
