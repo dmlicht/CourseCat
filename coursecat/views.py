@@ -33,14 +33,6 @@ def topic(topic_name):
         course.score = (score_row and score_row.score) or DEFAULT_SCORE
     return render_template('courses.html', courses=courses, topic=topic, form=form )
 
-#@app.route('/courses/<course_name>')
-#def course(course_name):
-#    course = Course.query.filter_by(name=course_name).first()
-#    scores = []
-#    for topic in course.topics:
-#        scores.append(Score.query.filter_by(course=course.name, topic=topic.name))
-#    return render_template('course_info.html', topics = course.topics, scores = scores)
-
 @app.route("/courses/<course_name>", methods = ["GET", "POST"])
 def view_course(course_name):
     form = SubmitForm()
@@ -60,8 +52,6 @@ def view_course(course_name):
     db.session.commit()
     print request.form.get("vote", "None provided")
     return render_template("courses.html", courses = [course], topic = topic, form = form)
-
-
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():

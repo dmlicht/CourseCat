@@ -7,16 +7,14 @@
 	<td>{{course.name}}</td>
 	<td>{{course.url}}</td>
 	<td>{{course.description}}</td>
-</tr>
-
-<form class="form-horizontal well" action="{{url_for('view_course', course_name=course.name)}}" method="POST">
-    <div class="form-actions">
-		<button type="submit" class="btn" name="vote" value="upvote">upvote</button>
-		<button type="submit" class="btn" name="vote" value="downvote">downvote</button>
+    <form action="{{url_for('view_course', course_name=course.name)}}" method="POST">
+    <td>
+        <button type="submit" class="btn" name="vote" value="upvote">upvote</button>
+        <button type="submit" class="btn" name="vote" value="downvote">downvote</button>
 		<input type="hidden" name="vote" value={{request.form['vote']}} />
-    </div>
-</form>
-
+    </td>
+    </form>
+</tr>
 
 {% endfor %}
 </table>
