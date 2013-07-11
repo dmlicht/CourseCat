@@ -36,6 +36,30 @@ def topic(topic_name):
 #        scores.append(Score.query.filter_by(course=course.name, topic=topic.name))
 #    return render_template('course_info.html', topics = course.topics, scores = scores)
 
+@app.route("/courses/<topic_name>/<course_name>", methods = ["GET", "POST"])
+def vote(topic_name, course_name):
+    form = SubmitForm()
+    course = Course.query.filter_by(name=course_name).first_or_404()
+    topic = Topic.query.filter_by(name=topic_name).first_or_404()
+    score_obj = Score.query.filter_by(course=course.name, topic=topic.name).first()
+    print 'just voted'
+    print request.method
+    if request.method == "POST":
+        print 'requesting'
+        button = request.form['vote']
+        if button == 'upvote': 
+            score_obj.score += 1
+        elif button == 'downvote':
+            score_obj.score -= 1
+        else:
+            print "there was a problem :("
+    course.score = score_obj.score
+    print score_obj.score
+    db.session.commit()
+
+    return render_template("courses.html", courses = [course], form=form)
+
+
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
     new_course = Course(name=request.form['name'], url=request.form['url'], description="description")

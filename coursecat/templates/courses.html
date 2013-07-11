@@ -8,6 +8,18 @@
 	<td>{{course.description}}</td>
 	<td>{{course.score}}</td>
 </tr>
+
+<form class="form-horizontal well" action="{{url_for('vote')" method="POST">
+    <div class="form-actions">
+		<button type="button" class="btn" name="vote" value="upvote">upvote</button>
+		<button type="button" class="btn" name="vote" value="downvote">downvote</button>
+		<input type="hidden" name="vote" value={{request.form['vote']}} />
+    </div>
+</form>
+
+
+
+
 {% endfor %}
 </table>
 {% endblock %}
