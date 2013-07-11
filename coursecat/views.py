@@ -18,6 +18,13 @@ def topics():
     form = SubmitForm()
     return render_template('topics.html', topics=Topic.query.all(), form=form)
 
+# course for a particular topic:
+@app.route('/topics/<topic_name>')
+def topic(topic_name):
+    form = SubmitForm()
+    topic = Topic.query.filter_by(name=topic_name).first() #should only have one
+    return render_template('courses.html', courses = topic.courses, form=form)
+
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
     new_course = Course(name=request.form['name'], url=request.form['url'], description="description")
