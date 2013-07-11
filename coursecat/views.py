@@ -1,6 +1,6 @@
 #! usr/local/bin/python
 from coursecat import app, db
-from coursecat.models import Course, Topic
+from coursecat.models import Course, Topic, Score
 from flask.ext.wtf import Form, TextField, ValidationError, Required
 from flask import render_template, request, redirect, url_for
 
@@ -23,7 +23,7 @@ def topics():
 def topic(topic_name):
     form = SubmitForm()
     topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
-    courses = topics.courses
+    courses = topic.courses
     for course in courses:
         course.score = Score.query.filter_by(course=course.name, topic=topic_name).first().score
     return render_template('courses.html', courses = courses, form=form )

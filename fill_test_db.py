@@ -68,19 +68,19 @@ def create_course_with_two_topics_and_scores(name):
 	topic_1 = Topic(name = 'topic_1')
 	topic_2 = Topic(name = 'topic_2')
 	db.session.add(new_course)
-	db.session.add(new_topic)
-	new_course.topic.append(topic_1)
-	new_course.topic.append(topic_2)
+	db.session.add(topic_1)
+	db.session.add(topic_2)
+	new_course.topics.append(topic_1)
+	new_course.topics.append(topic_2)
 
 	db.session.add(Score(course=name, topic=topic_1.name, score=1))
 	db.session.add(Score(course=name, topic=topic_2.name, score=2))
 	
 
 
-map(create_and_add_course, xrange(10))
-map(create_and_add_topic, TEST_TOPIC_NAMES[:4])
-map(create_and_add_topic_with_courses, TEST_TOPIC_NAMES[4:])
-
-db.session.add(Score(course="course_0", topic=""))
+#map(create_and_add_course, xrange(10))
+#map(create_and_add_topic, TEST_TOPIC_NAMES[:4])
+#map(create_and_add_topic_with_courses, TEST_TOPIC_NAMES[4:])
+create_course_with_two_topics_and_scores('coursey')
 
 db.session.commit()
