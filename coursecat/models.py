@@ -1,5 +1,4 @@
 from coursecat import db
-#from sqlalchemy.ext.associationproxy import association_proxy
 
 
 topics = db.Table('topics',
@@ -15,7 +14,6 @@ class Course(db.Model):
     name = db.Column(db.String(140))
     url = db.Column(db.String(1000))
     description = db.Column(db.String(5000))
-    #topics = db.relationship("Assoc", backref="course")
     topics = db.relationship('Topic', secondary=topics, backref=db.backref('courses'))
 
     def __repr__(self):
@@ -40,12 +38,3 @@ class Topic(db.Model):
 
     def __init__(self, name):
         self.name = name
-
-
-# association table:
-#class Assoc(db.Model):
-#    __tablename__ = 'association'
-#    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
-#    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), primary_key=True)
-#    topic = db.relationship("Topic", backref = "course_assocs")
-#    score = db.Column(db.Integer)
