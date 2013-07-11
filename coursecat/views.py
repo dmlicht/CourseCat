@@ -4,6 +4,8 @@ from coursecat.models import Course, Topic, Score
 from flask.ext.wtf import Form, TextField, ValidationError, Required
 from flask import render_template, request, redirect, url_for
 
+DEFAULT_SCORE = 0
+
 class SubmitForm(Form):
     name = TextField('Name', description='Short title of course/tutorial')
     url = TextField('URL', description='Where can the course/tutorial be found on the web?')
@@ -25,8 +27,9 @@ def topic(topic_name):
     topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
     courses = topic.courses
     for course in courses:
-        course.score = Score.query.filter_by(course=course.name, topic=topic_name).first().score
-    return render_template('courses.html', courses = courses, form=form )
+        score_row = Score.query.filter_by(course=course.name, topic=topic_name).first()
+        course.score = (score_row and score_row.score) or DEFAULT_SCORE
+    return render_template('courses.html', courses=courses, topic=topic, form=form )
 
 #@app.route('/courses/<course_name>')
 #def course(course_name):

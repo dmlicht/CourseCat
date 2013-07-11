@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
+{% if topic %} <h1> <a href="{{url_for('topics')}}"> Topics </a> / {{topic.name}} </h1> {% endif %}
 <table class="table table-bordered table-striped table-hover">
 {% for course in courses %}
 <tr>
