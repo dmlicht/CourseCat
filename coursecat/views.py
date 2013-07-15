@@ -46,35 +46,24 @@ def topic(topic_name):
     for course in courses:
         score_row = Score.query.filter_by(course=course.name, topic=topic_name).first()
         course.score = (score_row and score_row.score) or DEFAULT_SCORE
-    return render_template('courses.html', courses=courses, topic=topic, form=form )
-
-#@app.route('/courses/<course_name>')
-#def course(course_name):
-#    course = Course.query.filter_by(name=course_name).first()
-#    scores = []
-#    for topic in course.topics:
-#        scores.append(Score.query.filter_by(course=course.name, topic=topic.name))
-#    return render_template('course_info.html', topics = course.topics, scores = scores)
+    return render_template('courses.html', courses=courses, topicset=[topic], form=form )
 
 @app.route("/courses/<course_name>", methods = ["GET", "POST"])
 def view_course(course_name):
     form = SubmitForm()
     course = Course.query.filter_by(name=course_name).first_or_404()
-    topic = course.topics[0]
-    score_obj = Score.query.filter_by(course=course.name, topic=topic.name).first()
     if request.method == "POST":
-        button_pressed = request.form['vote']
-        if button_pressed == 'upvote': 
+        button_pressed = request.form['vote'].split(' ')
+        score_obj = Score.query.filter_by(course=course.name, topic=button_pressed[1]).first()
+        if button_pressed[0] == 'upvote': 
             score_obj.score += 1
-        elif button_pressed == 'downvote':
+        elif button_pressed[0] == 'downvote':
             score_obj.score -= 1
         else:
             print "there was a problem :("
-    course.score = score_obj.score
-    print score_obj.score
     db.session.commit()
-    print request.form.get("vote", "None provided")
-    return render_template("courses.html", courses = [course], topic = topic, form = form)
+    scores_all_topics = [Score.query.filter_by(course=course.name, topic=t.name).first().score for t in course.topics]
+    return render_template("course_single.html", course = course, form = form, scores = scores_all_topics)
 
 
 
