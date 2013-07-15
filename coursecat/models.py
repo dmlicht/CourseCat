@@ -38,9 +38,17 @@ class Topic(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def __cmp__(self, other):
+        if self.name == other.name:
+            return 0
+        elif self.name > other.name:
+            return 1
+        else:
+            return -1
+
 class Score(db.Model):
     __tablename__ = 'score'
     course = db.Column(db.String(140), primary_key=True)
     topic = db.Column(db.String(140), primary_key=True)
     score = db.Column(db.Integer)
-    
+
