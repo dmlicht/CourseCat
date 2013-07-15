@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% if topic %} <h1> <a href="{{url_for('topics')}}"> Topics </a> / {{topic.name}} </h1> {% endif %}
+<h3>What is Course Cat?</h3>
+<p>Course Cat is the answer to the question "Does anybody know a good online course or resource for learning [TOPIC]?" The app crowdsources good resources for self-directed learning and allows users to upvote and downvote the resources according to how effective they are in teaching various topics. Use, learn, vote, recommend your own courses, and enjoy!</p>
+<table class="table table-bordered">
+	<tr>
+		<td><div class="text-center"><h3><a href="{{url_for('topics')}}">see topics</a></h3></div></td>
+		<td><div class="text-center"><h3><a href="{{url_for('courses')}}">see courses</a></h3></div></td>
+	</tr>
+</table>
+
+
+{% endblock %}
