@@ -58,29 +58,32 @@ def create_and_add_topic_with_courses(name):
 
 	new_topic.courses.append(second_course)
 
-def create_course_with_two_topics_and_scores(name):
+def create_course_with_two_topics_and_scores(name, url, description, *topics):
 	new_course = Course(
 		name = name,
-		url = 'www.coursename.com',
-		description = 'I am a course with two topics'
+		url = url,
+		description = description
 	)
 
-	topic_1 = Topic(name = 'topic_1')
-	topic_2 = Topic(name = 'topic_2')
 	db.session.add(new_course)
-	db.session.add(topic_1)
-	db.session.add(topic_2)
-	new_course.topics.append(topic_1)
-	new_course.topics.append(topic_2)
 
-	db.session.add(Score(course=name, topic=topic_1.name, score=1))
-	db.session.add(Score(course=name, topic=topic_2.name, score=2))
-	
+	for t in topics:
+		new_topic = Topic(name = t)
+		db.session.add(new_topic)
+		new_course.topics.append(new_topic)
+		db.session.add(Score(course=name, topic=new_topic.name, score=0))
 
 
 #map(create_and_add_course, xrange(10))
 #map(create_and_add_topic, TEST_TOPIC_NAMES[:4])
 #map(create_and_add_topic_with_courses, TEST_TOPIC_NAMES[4:])
-create_course_with_two_topics_and_scores('coursey')
+create_course_with_two_topics_and_scores('GitHub Flow', 
+	'http://scottchacon.com/2011/08/31/github-flow.html', 
+	'describes good practices for working with git and github',
+	'git', 'github')
+create_course_with_two_topics_and_scores('Flask Mega-Tutorial',
+	'http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world',
+	'delves deeply into designing a web app in Flask',
+	'flask', 'python')
 
 db.session.commit()

@@ -1,10 +1,29 @@
+{% extends layout.html %}
 
+{% block content %}
+<div class="row">
+	<div class="span6">
+		<h2><a href="{{url_for(course.url)}}">{{course.name}}</h2>
+	</div>
+	<div class="span6">
+		<h2>description</h2>
+		<p>{{course.description}}</p>
+	</div>
+</div>
 
-
-<form class="form-horizontal well" action="{{url_for('view_course', course_name=course.name)}}" method="POST">
-    <div class="form-actions">
-		<button type="submit" class="btn" name="vote" value="upvote">upvote</button>
-		<button type="submit" class="btn" name="vote" value="downvote">downvote</button>
+<div class="row">
+	<h3>this course has been filed under:</h3>
+	{% for topic in course.topics %}
+	<h2>topic.name</h2>
+	<h3>this course scores {{scores[loop.index0]}} for this topic</h3>
+	<form class="form-horizontal well" action="{{url_for('view_course', course_name=course.name)}}" method="POST">
+   	<div class="form-actions">
+		<button type="submit" class="btn-info" name="vote" value="upvote {{topic.name}}">upvote</button>
+		<button type="submit" class="btn-danger" name="vote" value="downvote {{topic.name}}">downvote</button>
 		<input type="hidden" name="vote" value={{request.form['vote']}} />
     </div>
-</form>
+	</form>
+	{% endfor %}
+
+{% endblock %}
+

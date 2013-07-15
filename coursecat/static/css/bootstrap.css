@@ -82,6 +82,7 @@ a:focus {
 a:hover,
 a:active {
   outline: 0;
+  color: #33CC33;
 }
 
 sub,
@@ -239,7 +240,7 @@ a {
 
 a:hover,
 a:focus {
-  color: #777777;
+  color: #33CC33;
   text-decoration: underline;
 }
 
@@ -2001,6 +2002,7 @@ table {
   background-color: transparent;
   border-collapse: collapse;
   border-spacing: 0;
+  text-align: left;
 }
 
 .table {
@@ -2060,6 +2062,7 @@ table {
 .table-bordered th,
 .table-bordered td {
   border-left: 1px solid #dddddd;
+  text-align: center;
 }
 
 .table-bordered caption + thead tr:first-child th,
