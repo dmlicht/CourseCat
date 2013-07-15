@@ -65,6 +65,12 @@ def create_course_with_two_topics_and_scores(name):
 		description = 'I am a course with two topics'
 	)
 
+    new_course_2 = Course(
+        name = "Ma Name",
+        url = "this.com",
+        description = "AAAAAH I'm A Course"
+    )
+
 	topic_1 = Topic(name = 'topic_1')
 	topic_2 = Topic(name = 'topic_2')
 	db.session.add(new_course)
@@ -73,9 +79,8 @@ def create_course_with_two_topics_and_scores(name):
 	new_course.topics.append(topic_1)
 	new_course.topics.append(topic_2)
 
-	db.session.add(Score(course=name, topic=topic_1.name, score=1))
-	db.session.add(Score(course=name, topic=topic_2.name, score=2))
-	
+	db.session.add(Score(course_id=new_course.id, topic_id=topic_1.id, score=1))
+	db.session.add(Score(course_id=new_course_2.id, topic_id=topic_2.id, score=2))
 
 
 #map(create_and_add_course, xrange(10))

@@ -7,10 +7,13 @@
 	<td>{{course.name}}</td>
 	<td>{{course.url}}</td>
 	<td>{{course.description}}</td>
-    <form action="{{url_for('view_course', course_name=course.name)}}" method="POST">
+    <form action="{{url_for('vote')}}" method="POST">
     <td>
-        <button type="submit" class="btn" name="vote" value="upvote">upvote</button>
-        <button type="submit" class="btn" name="vote" value="downvote">downvote</button>
+        <input type="hidden" name="course_id" value="{{course.id}}" />
+        <input type="hidden" name="topic_id" value="((topic.id}}" />
+        <input type="hidden" name="submitted_from" value="{{request.path}}" />
+        <button type="submit" class="btn" name="vote" value="up">upvote</button>
+        <button type="submit" class="btn" name="vote" value="down">downvote</button>
 		<input type="hidden" name="vote" value={{request.form['vote']}} />
     </td>
     </form>

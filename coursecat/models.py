@@ -40,7 +40,7 @@ class Topic(db.Model):
 
 class Score(db.Model):
     __tablename__ = 'score'
-    course = db.Column(db.String(140), primary_key=True)
-    topic = db.Column(db.String(140), primary_key=True)
+    course_id = db.Column(db.Integer, primary_key=True)
+    topic_id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer)
     
