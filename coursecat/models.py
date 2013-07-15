@@ -1,10 +1,13 @@
 from coursecat import db
 
-
 topics = db.Table('topics',
     db.Column('course_id', db.Integer, db.ForeignKey('course.id')),
     db.Column('topic_id', db.Integer, db.ForeignKey('topic.id')),
 )
+class TopicsCourses(db.Model):
+    __tablename__ = 'topics_courses'
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
 
 
 class Course(db.Model):
@@ -48,7 +51,7 @@ class Topic(db.Model):
 
 class Score(db.Model):
     __tablename__ = 'score'
-    course = db.Column(db.String(140), primary_key=True)
-    topic = db.Column(db.String(140), primary_key=True)
+    course_id = db.Column(db.Integer, primary_key=True)
+    topic_id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer)
 

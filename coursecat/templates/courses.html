@@ -9,14 +9,7 @@
 	<td><b><a href="{{url_for('view_course', course_name=course.name)}}">{{course.name}}</b></td>
 	<td><a href="{{course.url}}">link</a></td>
 	<td>{{course.description}}</td>
-	<td>[add score here once we can query it]</td>
-	<td>
-	<form action="{{url_for('courses')}}" method="POST" style="display: inline;">
-		<button type="submit" class="btn-info btn-mini" name="vote" value="upvote {{topic.name}} {{course.name}}">upvote</button>
-		<button type="submit" class="btn-danger btn-mini" name="vote" value="downvote {{topic.name}} {{course.name}}">downvote</button>
-		<input type="hidden" name="vote" value={{request.form['vote']}} />
-	</form>
-	</td>
+    <td>{% include 'vote.html' %}</td>
 </tr>
 </table>
 {% endfor %}

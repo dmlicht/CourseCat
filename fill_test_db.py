@@ -59,20 +59,19 @@ def create_and_add_topic_with_courses(name):
 	new_topic.courses.append(second_course)
 
 def create_course_with_two_topics_and_scores(name, url, description, *topics):
-	new_course = Course(
+    new_course = Course(
 		name = name,
 		url = url,
 		description = description
 	)
 
-	db.session.add(new_course)
+    db.session.add(new_course)
 
-	for t in topics:
-		new_topic = Topic(name = t)
-		db.session.add(new_topic)
-		new_course.topics.append(new_topic)
-		db.session.add(Score(course=name, topic=new_topic.name, score=0))
-
+    for t in topics:
+        new_topic = Topic(name = t)
+        db.session.add(new_topic)
+        new_course.topics.append(new_topic)
+        db.session.add(Score(course=name, topic=new_topic.name, score=0))
 
 #map(create_and_add_course, xrange(10))
 #map(create_and_add_topic, TEST_TOPIC_NAMES[:4])
