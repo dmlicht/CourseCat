@@ -1,11 +1,8 @@
 from coursecat import db
 
-topics = db.Table('topics',
-    db.Column('course_id', db.Integer, db.ForeignKey('course.id')),
-    db.Column('topic_id', db.Integer, db.ForeignKey('topic.id')),
-)
 class TopicsCourses(db.Model):
     __tablename__ = 'topics_courses'
+    id =  db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
 
@@ -17,7 +14,7 @@ class Course(db.Model):
     name = db.Column(db.String(140))
     url = db.Column(db.String(1000))
     description = db.Column(db.String(5000))
-    topics = db.relationship('Topic', secondary=topics, backref=db.backref('courses'))
+    topics = db.relationship('Topic', secondary='topics_courses', backref=db.backref('courses'))
 
     def __repr__(self):
         return self.name
@@ -49,9 +46,12 @@ class Topic(db.Model):
         else:
             return -1
 
-class Score(db.Model):
-    __tablename__ = 'score'
-    course_id = db.Column(db.Integer, primary_key=True)
-    topic_id = db.Column(db.Integer, primary_key=True)
+class Stats(db.Model):
+    __tablename__ = 'stats'
+    id = db.Column(db.Integer, primary_key=True)
+    topics_courses_id = db.Column(db.Integer, db.ForeignKey('topics_courses.id'))
     score = db.Column(db.Integer)
+
+    def __repr__(self):
+        return str(self.score)
 
