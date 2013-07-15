@@ -1,23 +1,24 @@
 {% extends 'layout.html' %}
 {% block content %}
-{% if topic %} <h1> <a href="{{url_for('topics')}}"> Topics </a> / {{topic.name}} </h1> {% endif %}
+<h3><a href="{{url_for('topics')}}">[all topics]</a>
+{% for topic in topicset %}
+<h1> <a href="{{url_for('topics',topic_name=topic.name)}}">{{topic.name}} </h1>
+{% for course in topic.courses %}
 <table class="table table-bordered table-striped table-hover">
-{% for course in courses %}
 <tr>
-	<td>{{course.name}}</td>
-	<td>{{course.url}}</td>
+	<td><b><a href="{{url_for('view_course', course_name=course.name)}}">{{course.name}}</b></td>
+	<td><a href="{{course.url}}">link</a></td>
 	<td>{{course.description}}</td>
-</tr>
-
-<form class="form-horizontal well" action="{{url_for('view_course', course_name=course.name)}}" method="POST">
-    <div class="form-actions">
-		<button type="submit" class="btn" name="vote" value="upvote">upvote</button>
-		<button type="submit" class="btn" name="vote" value="downvote">downvote</button>
+	<td>[add score here once we can query it]</td>
+	<td>
+	<form action="{{url_for('courses')}}" method="POST" style="display: inline;">
+		<button type="submit" class="btn-info btn-mini" name="vote" value="upvote {{topic.name}} {{course.name}}">upvote</button>
+		<button type="submit" class="btn-danger btn-mini" name="vote" value="downvote {{topic.name}} {{course.name}}">downvote</button>
 		<input type="hidden" name="vote" value={{request.form['vote']}} />
-    </div>
-</form>
-
-
-{% endfor %}
+	</form>
+	</td>
+</tr>
 </table>
+{% endfor %}
+{% endfor %}
 {% endblock %}
