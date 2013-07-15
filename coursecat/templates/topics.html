@@ -1,13 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
+<h3><a href="{{url_for('courses')}}">[expand to show courses]</a></h3>
 <table class="table table-bordered table-striped table-hover">
-    <thead>
-        <td>name</td>
-        <td>description</td>
-    </thead>
     {% for topic in topics %}
     <tr>
-        <td><a href="{{url_for('topic', topic_name=topic.name)}}" >{{topic.name}}</a></td>
+        <td><h1><a href="{{url_for('topic', topic_name=topic.name)}}" >{{topic.name}}</a></h1></td>
 	    <td>{{topic.description}}</td>
     </tr>
     {% endfor %}

@@ -15,12 +15,27 @@ class SubmitForm(Form):
 @app.route('/')
 def home():
     form = SubmitForm()
-    return render_template('courses.html', courses=Course.query.all(), form=form)
+    return render_template('home.html', courses=Course.query.all(), form=form)
+
+@app.route('/courses')
+def courses():
+    form = SubmitForm()
+    courses = Course.query.all()
+    topicset = set()
+    for course in courses:
+        for topic in course.topics:
+            topicset.add(topic)
+    ### ADD SCORE UPDATING ABILITIES HERE
+    topiclist = list(topicset)
+    topiclist.sort()
+    return render_template('courses.html', courses=courses, form=form, topicset=topiclist)
 
 @app.route('/topics')
 def topics():
     form = SubmitForm()
-    return render_template('topics.html', topics=Topic.query.all(), form=form)
+    topics = Topic.query.all()
+    topics.sort()
+    return render_template('topics.html', topics=topics, form=form)
 
 # course for a particular topic:
 @app.route('/topics/<topic_name>')
