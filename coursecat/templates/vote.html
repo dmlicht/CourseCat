@@ -1,6 +1,6 @@
 <form action="{{url_for('vote')}}" method="POST" style="display: inline;">
     <input type="hidden" name="submitted_from" value="{{request.path}}" />
-    <input type="hidden" name="score_id" value="{{score.id}}" />
+    <input type="hidden" name="stats_id" value="{{course.stats.id}}" />
     <button type="submit" class="btn-info btn-mini" name="vote" value="up">upvote</button>
     <button type="submit" class="btn-danger btn-mini" name="vote" value="down">downvote</button>
     <input type="hidden" name="vote" value={{request.form['vote']}} />

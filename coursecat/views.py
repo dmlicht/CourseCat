@@ -1,6 +1,6 @@
 #! usr/local/bin/python
 from coursecat import app, db
-from coursecat.models import Course, Topic, Score, Topics_Courses
+from coursecat.models import Course, Topic, Stats, TopicsCourses
 from flask.ext.wtf import Form, TextField, ValidationError, \
     Required, DataRequired, TextAreaField
 from flask.ext.wtf.html5 import URLField
@@ -38,16 +38,21 @@ def topics():
     topics.sort()
     return render_template('topics.html', topics=topics, form=form)
 
+def getStats(topic_name):
+    return db.session.query(Course, Topic, Stats).join(TopicsCourses).join(Topic).join(Stats).filter(Topic.name==topic_name).all()
+
 # course for a particular topic:
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
     form = SubmitForm()
     topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
     courses = topic.courses
-    for course in courses:
-        score_row = Score.query.filter_by(course_id=course.id, topic_id=topic.id).first()
-        course.score = (score_row and score_row.score) or DEFAULT_SCORE
-    return render_template('courses.html', courses=courses, topicset=[topic], form=form )
+    def right_topic(x):
+        return x[1] == topic
+    scores = filter(right_topic, getStats(topic.name))
+    for c,t,s in scores:
+        c.stats = s
+    return render_template('courses.html', courses=courses, topicset=[topic], form=form)
 
 @app.route("/courses/<course_name>", methods = ["GET", "POST"])
 def view_course(course_name):
@@ -68,9 +73,6 @@ def view_course(course_name):
     scores_all_topics = [Score.query.filter_by(course=course.name, topic=t.name).first().score for t in course.topics]
     return render_template("course_single.html", course = course, form = form, scores = scores_all_topics)
 
-@app.route("/courses/<id>", methods = ["GET"])
-def view_course(id):
-    course = Course.query.filter_by(id=id).first_or_404()
 
 @app.route("/vote", methods=["POST"])
 def vote():
