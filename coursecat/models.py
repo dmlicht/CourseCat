@@ -1,6 +1,13 @@
 from coursecat import db
 
 class TopicsCourses(db.Model):
+    """connects topics and courses stats object
+    list of topics_courses related to a given object can be accessed via
+    <course_var>.topics_courses --> [topics_courses] 
+    <topic_var>.topics_courses --> [topics_courses]
+    topics_course will allow navigation to related Course, Topic, or Stats objects
+    via .course, .topic, .stats, respectively"""
+
     __tablename__ = 'topics_courses'
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), primary_key=True)
@@ -11,14 +18,13 @@ class TopicsCourses(db.Model):
 
 
 class Course(db.Model):
-    """create new course"""
     __tablename__ = 'course'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140))
     url = db.Column(db.String(1000))
     description = db.Column(db.String(5000))
 
-    #this may allow us to reference topics directly without scores to unbreak prior code
+    # bellow allows access array of topics associated with given course via topics attribute of vice versa
     topics = db.relationship('Topic', secondary='topics_courses', backref=db.backref('courses'))
 
     def __repr__(self):
@@ -38,6 +44,7 @@ class Topic(db.Model):
     description = db.Column(db.String(5000))
 
     def get_sorted_topics_courses(self):
+        """returns list of topics course objects sorted by the saved on the stats object"""
         return sorted(self.topics_courses, key=lambda course_topic: course_topic.stats.score, reverse=True)
 
     def __repr__(self):
