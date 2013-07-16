@@ -1,6 +1,6 @@
 #! usr/local/bin/python
 from coursecat import app, db
-from coursecat.models import Course, Topic, Stats, TopicsCourses
+from coursecat.models import Course, Topic, TopicsCourses, TopicCourseStats
 from flask.ext.wtf import Form, TextField, ValidationError, \
     Required, DataRequired, TextAreaField
 from flask.ext.wtf.html5 import URLField
@@ -21,15 +21,7 @@ def home():
 @app.route('/courses')
 def courses():
     form = SubmitForm()
-    courses = Course.query.all()
-    topicset = set()
-    for course in courses:
-        for topic in course.topics:
-            topicset.add(topic)
-    ### ADD SCORE UPDATING ABILITIES HERE
-    topiclist = list(topicset)
-    topiclist.sort()
-    return render_template('courses.html', courses=courses, form=form, topicset=topiclist)
+    return render_template('courses.html', form=form, topics=Topic.query.all())
 
 @app.route('/topics')
 def topics():
@@ -38,21 +30,11 @@ def topics():
     topics.sort()
     return render_template('topics.html', topics=topics, form=form)
 
-def getStats(topic_name):
-    return db.session.query(Course, Topic, Stats).join(TopicsCourses).join(Topic).join(Stats).filter(Topic.name==topic_name).all()
-
-# course for a particular topic:
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
     form = SubmitForm()
     topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
-    courses = topic.courses
-    def right_topic(x):
-        return x[1] == topic
-    scores = filter(right_topic, getStats(topic.name))
-    for c,t,s in scores:
-        c.stats = s
-    return render_template('courses.html', courses=courses, topicset=[topic], form=form)
+    return render_template('courses.html', topics=[topic], form=form)
 
 @app.route("/courses/<course_name>", methods = ["GET", "POST"])
 def view_course(course_name):
@@ -76,14 +58,12 @@ def view_course(course_name):
 
 @app.route("/vote", methods=["POST"])
 def vote():
-    topic_id = request.form['topic_id']
-    course_id = request.form['course_id']
-    score = Score.query.filter_by(course_id=course_id, topic_id=topic_id).first()
-    score = score or Score(course_id=course_id, topic_id=topic_id, score=DEFAULT_SCORE)
+    stats_id = request.form['stats_id']
+    stats = TopicCourseStats.query.filter_by(id=stats_id).first()
     score_change = 1 if (request.form["vote"] == "up") else -1
-    score.score += score_change
+    stats.score += score_change
+    stats.num_votes += 1
     db.session.commit()
-    print request.form['submitted_from']
     return redirect(request.form['submitted_from'])
 
 @app.route('/courses/add', methods=["GET","POST"])

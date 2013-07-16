@@ -2,9 +2,12 @@ from coursecat import db
 
 class TopicsCourses(db.Model):
     __tablename__ = 'topics_courses'
-    id =  db.Column(db.Integer, primary_key=True)
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), primary_key=True)
+    stats_id = db.Column(db.Integer, db.ForeignKey('topic_course_stats.id'), primary_key=True)
+    course = db.relationship("Course", backref="topics_courses")
+    topic = db.relationship("Topic", backref="topics_courses")
+    stats = db.relationship("TopicCourseStats", backref="topics_courses")
 
 
 class Course(db.Model):
@@ -14,10 +17,12 @@ class Course(db.Model):
     name = db.Column(db.String(140))
     url = db.Column(db.String(1000))
     description = db.Column(db.String(5000))
+
+    #this may allow us to reference topics directly without scores to unbreak prior code
     topics = db.relationship('Topic', secondary='topics_courses', backref=db.backref('courses'))
 
     def __repr__(self):
-        return self.name
+        return "<Course %s>" % self.name
 
     def __init__(self, name, url, description):
         self.name = name
@@ -32,8 +37,11 @@ class Topic(db.Model):
     name = db.Column(db.String(140))
     description = db.Column(db.String(5000))
 
+    def get_sorted_topics_courses(self):
+        return sorted(self.topics_courses, key=lambda course_topic: course_topic.stats.score, reverse=True)
+
     def __repr__(self):
-        return self.name
+        return "<Topic %s>" % self.name
 
     def __init__(self, name):
         self.name = name
@@ -46,12 +54,12 @@ class Topic(db.Model):
         else:
             return -1
 
-class Stats(db.Model):
-    __tablename__ = 'stats'
+class TopicCourseStats(db.Model):
+    __tablename__ = 'topic_course_stats'
     id = db.Column(db.Integer, primary_key=True)
-    topics_courses_id = db.Column(db.Integer, db.ForeignKey('topics_courses.id'))
+    #topics_courses_id = db.Column(db.Integer, db.ForeignKey('topics_courses.id'))
     score = db.Column(db.Integer)
+    num_votes = db.Column(db.Integer)
 
     def __repr__(self):
-        return str(self.score)
-
+        return "<Stats %d / %d>" % (self.score, self.num_votes)
