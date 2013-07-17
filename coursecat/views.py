@@ -2,16 +2,25 @@
 from coursecat import app, db
 from coursecat.models import Course, Topic, TopicsCourses, TopicCourseStats
 from flask.ext.wtf import Form, TextField, ValidationError, \
-    Required, DataRequired, TextAreaField
+    Required, DataRequired, TextAreaField, SelectField
 from flask.ext.wtf.html5 import URLField
 from flask import render_template, request, redirect, url_for, session
 
 DEFAULT_SCORE = 0
 
 class SubmitForm(Form):
-    name = TextField('Name', default="Name")
+    name = TextField('Name', default="Course Name")
     url = URLField('URL', default="Url")
-    description = TextAreaField('URL', default="Description")
+    description = TextAreaField('Description', default="Description")
+    topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
+
+    def __init__(self):
+        super(SubmitForm, self).__init__()
+        self.update_topics()
+        #SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
+
+    def update_topics(self):
+        SubmitForm.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])        
 
 @app.route('/')
 def home():
@@ -58,9 +67,6 @@ def topic(topic_name):
 @app.route("/courses/<course_id>", methods = ["GET"])
 def view_course(course_id):
     course = Course.query.get(course_id)
-    #I renamed course_single.html -> course.html
-    #we can use plurality of the word distinguish between a single
-    #element or a list
     return render_template("course.html", form=SubmitForm(), course=course)
 
 @app.route("/vote", methods=["POST"])
@@ -75,7 +81,14 @@ def vote():
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
-    new_course = Course(name=request.form['name'], url=request.form['url'], description=request.form["description"])
+    new_course = Course(name=request.form['name'], url=request.form['url'], description=request.form['description'])
+    chosen_topic = Topic.get(request.form['topics'])
+    if chosen_topic:
+        new_course.associate_topic(chosen_topic)
+    else:
+        new_topic = Topic(name=request.form['topics'])
+        db.session.add(new_topic)
+        new_course.associate_topic(new_topic)
     db.session.add(new_course)
     db.session.commit()
     return redirect(url_for('home'))
