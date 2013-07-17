@@ -36,7 +36,7 @@ class Course(db.Model):
         self.description = description
 
     def associate_topic(self, topic):
-        """creats topics_course and stats object for a new association between courses and topics"""
+        """creates topics_course and stats object for a new association between courses and topics"""
         new_topics_course = TopicsCourses(topic = topic, stats = TopicCourseStats())
         self.topics_courses.append(new_topics_course)
 
@@ -84,6 +84,6 @@ class TopicCourseStats(db.Model):
     def __repr__(self):
         return "<Stats %d / %d>" % (self.score, self.num_votes)
 
-    def __init__(self):
-        self.score = 0
-        self.num_votes = 0
+    def __init__(self, score=None, num_votes=None):
+        self.score = score or 0
+        self.num_votes = num_votes or 0

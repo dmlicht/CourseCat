@@ -12,20 +12,20 @@ class SubmitForm(Form):
     name = TextField('Name', default="Course Name")
     url = URLField('URL', default="Url")
     description = TextAreaField('Description', default="Description")
-    topics = SelectField(u'Topics')
+    topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
+
+    def __init__(self):
+        super(SubmitForm, self).__init__()
+        self.update_topics()
+        #SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
+
+    def update_topics(self):
+        SubmitForm.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])        
 
 @app.route('/')
 def home():
     form = SubmitForm()
-    courses = Course.query.all()
-    topic_set = set()
-    for c in courses:
-        for t in c.topics:
-            topic_set.add(t)
-    topic_choices = list(topic_set)
-    topic_choices.sort()
-    form.topics.choices = [(t.id, t.name) for t in topic_choices]
-    return render_template('home.html', courses=courses, form=form)
+    return render_template('home.html', courses=Course.query.all(), form=form)
 
 @app.route('/courses')
 def courses():
@@ -67,9 +67,6 @@ def topic(topic_name):
 @app.route("/courses/<course_id>", methods = ["GET"])
 def view_course(course_id):
     course = Course.query.get(course_id)
-    #I renamed course_single.html -> course.html
-    #we can use plurality of the word distinguish between a single
-    #element or a list
     return render_template("course.html", form=SubmitForm(), course=course)
 
 @app.route("/vote", methods=["POST"])
@@ -85,13 +82,13 @@ def vote():
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
     new_course = Course(name=request.form['name'], url=request.form['url'], description=request.form['description'])
-    chosen_topic = Topic.query.filter_by(name=request.form['topics']).first()
+    chosen_topic = Topic.get(request.form['topics'])
     if chosen_topic:
-        new_course.topics.append(chosen_topic)
+        new_course.associate_topic(chosen_topic)
     else:
         new_topic = Topic(name=request.form['topics'])
         db.session.add(new_topic)
-        new_course.topics.append(new_topic)
+        new_course.associate_topic(new_topic)
     db.session.add(new_course)
     db.session.commit()
     return redirect(url_for('home'))
