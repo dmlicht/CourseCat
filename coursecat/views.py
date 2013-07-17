@@ -23,12 +23,29 @@ def courses():
     form = SubmitForm()
     return render_template('courses.html', form=form, topics=Topic.query.all())
 
-@app.route('/topics')
+@app.route('/topics', methods=['GET', 'POST'])
 def topics():
-    form = SubmitForm()
+    if request.method == 'GET':
+        return display_topics()
+    elif request.method =='POST':
+        return add_topic()
+
+def display_topics():
     topics = Topic.query.all()
     topics.sort()
-    return render_template('topics.html', topics=topics, form=form)
+    return render_template('topics.html', topics=topics, form=SubmitForm())
+
+def add_topic():
+    name = request.form['name']
+    description = request.form['description']
+    new_topic = Topic(name=name, description=description)
+    db.session.add(new_topic)
+    if request.form.get('course_id', False):
+        course = Course.query.get(request.form['course_id'])
+        course.associate_topic(new_topic)
+    print 'gets here?'
+    db.session.commit()
+    return redirect(url_for('topic', topic_name=new_topic.id))
 
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
@@ -58,7 +75,7 @@ def vote():
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
-    new_course = Course(name=request.form['name'], url=request.form['url'], description="description")
+    new_course = Course(name=request.form['name'], url=request.form['url'], description=request.form["description"])
     db.session.add(new_course)
     db.session.commit()
     return redirect(url_for('home'))
