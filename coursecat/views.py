@@ -2,21 +2,30 @@
 from coursecat import app, db
 from coursecat.models import Course, Topic, TopicsCourses, TopicCourseStats
 from flask.ext.wtf import Form, TextField, ValidationError, \
-    Required, DataRequired, TextAreaField
+    Required, DataRequired, TextAreaField, SelectField
 from flask.ext.wtf.html5 import URLField
 from flask import render_template, request, redirect, url_for, session
 
 DEFAULT_SCORE = 0
 
 class SubmitForm(Form):
-    name = TextField('Name', default="Name")
+    name = TextField('Name', default="Course Name")
     url = URLField('URL', default="Url")
-    description = TextAreaField('URL', default="Description")
+    description = TextAreaField('Description', default="Description")
+    topics = SelectField(u'Topics')
 
 @app.route('/')
 def home():
     form = SubmitForm()
-    return render_template('home.html', courses=Course.query.all(), form=form)
+    courses = Course.query.all()
+    topic_set = set()
+    for c in courses:
+        for t in c.topics:
+            topic_set.add(t)
+    topic_choices = list(topic_set)
+    topic_choices.sort()
+    form.topics.choices = [(t.id, t.name) for t in topic_choices]
+    return render_template('home.html', courses=courses, form=form)
 
 @app.route('/courses')
 def courses():
@@ -68,7 +77,14 @@ def vote():
 
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
-    new_course = Course(name=request.form['name'], url=request.form['url'], description="description")
+    new_course = Course(name=request.form['name'], url=request.form['url'], description=request.form['description'])
+    chosen_topic = Topic.query.filter_by(name=request.form['topics']).first()
+    if chosen_topic:
+        new_course.topics.append(chosen_topic)
+    else:
+        new_topic = Topic(name=request.form['topics'])
+        db.session.add(new_topic)
+        new_course.topics.append(new_topic)
     db.session.add(new_course)
     db.session.commit()
     return redirect(url_for('home'))

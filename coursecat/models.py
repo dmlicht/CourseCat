@@ -24,7 +24,7 @@ class Course(db.Model):
     url = db.Column(db.String(1000))
     description = db.Column(db.String(5000))
 
-    # bellow allows access array of topics associated with given course via topics attribute of vice versa
+    # below allows access array of topics associated with given course via topics attribute of vice versa
     topics = db.relationship('Topic', secondary='topics_courses', backref=db.backref('courses'))
 
     def __repr__(self):
