@@ -32,29 +32,9 @@ def topics():
 
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
-    form = SubmitForm()
-    topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
-    return render_template('courses.html', topics=[topic], form=form)
-"""
-@app.route("/courses/<course_name>", methods = ["GET", "POST"])
-def view_course(course_name):
-    form = SubmitForm()
-    course = Course.query.filter_by(name=course_name).first_or_404()
-    topic = course.topics[0]
-    score_obj = Score.query.filter_by(course_id=course.id, topic_id=topic.id).first()
-    if request.method == "POST":
-        button_pressed = request.form['vote'].split(' ')
-        score_obj = Score.query.filter_by(course=course.name, topic=button_pressed[1]).first()
-        if button_pressed[0] == 'upvote': 
-            score_obj.score += 1
-        elif button_pressed[0] == 'downvote':
-            score_obj.score -= 1
-        else:
-            print "there was a problem :("
-    db.session.commit()
-    scores_all_topics = [Score.query.filter_by(course=course.name, topic=t.name).first().score for t in course.topics]
-    return render_template("course_single.html", course = course, form = form, scores = scores_all_topics)
-"""
+    topic =  Topic.get(topic_name)
+    return render_template('courses.html', form=SubmitForm(), topics=[topic])
+
 @app.route("/courses/<course_id>", methods = ["GET"])
 def view_course(course_id):
     course = Course.query.get(course_id)
