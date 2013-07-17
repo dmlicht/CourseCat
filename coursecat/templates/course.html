@@ -13,19 +13,16 @@
 </div>
 <hr>
 <div class="row">
-	<div class="span12"
+    <div class="span12" >
 	<h3>this course has been filed under:</h3>
-	{% for topic in course.topics %}
-	<h4>{{topic.name}}</h4>
-	<h5>this course scores {{scores[loop.index0]}} for this topic
-	<form action="{{url_for('view_course', course_name=course.name)}}" method="POST" style="display: inline;">
-		<button type="submit" class="btn-info btn-mini" name="vote" value="upvote {{topic.name}}">upvote</button>
-		<button type="submit" class="btn-danger btn-mini" name="vote" value="downvote {{topic.name}}">downvote</button>
-		<input type="hidden" name="vote" value={{request.form['vote']}} />
-	</form>
+	{% for assoc in course.topics_courses %}
+	<h4>{{assoc.topic.name}}</h4>
+    <h5>
+        this course scores {{course.topics_courses[loop.index0].stats.score}} for this topic
+        {% include 'vote.html' %}
 	</h5>
 	{% endfor %}
-</div>
+    </div>
 </div>
 
 {% endblock %}
