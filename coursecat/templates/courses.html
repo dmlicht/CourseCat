@@ -8,7 +8,7 @@
     <table class="table table-bordered table-striped table-hover">
     {% for assoc in topic.get_sorted_topics_courses() %}
         <tr>
-	    <td><b><a href="{{url_for('view_course', course_name=assoc.course.name)}}">{{assoc.course.name}}</b></td>
+	    <td><b><a href="{{url_for('view_course', course_id=assoc.course.id)}}">{{assoc.course.name}}</b></td>
 	    <td><a href="{{assoc.course.url}}">link</a></td>
 	    <td>{{assoc.course.description}}</td>
         <td>{% include 'vote.html' %}</td>
