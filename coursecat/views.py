@@ -35,7 +35,7 @@ def topic(topic_name):
     form = SubmitForm()
     topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
     return render_template('courses.html', topics=[topic], form=form)
-
+"""
 @app.route("/courses/<course_name>", methods = ["GET", "POST"])
 def view_course(course_name):
     form = SubmitForm()
@@ -54,7 +54,14 @@ def view_course(course_name):
     db.session.commit()
     scores_all_topics = [Score.query.filter_by(course=course.name, topic=t.name).first().score for t in course.topics]
     return render_template("course_single.html", course = course, form = form, scores = scores_all_topics)
-
+"""
+@app.route("/courses/<course_id>", methods = ["GET"])
+def view_course(course_id):
+    course = Course.query.get(course_id)
+    #I renamed course_single.html -> course.html
+    #we can use plurality of the word distinguish between a single
+    #element or a list
+    return render_template("course.html", form=SubmitForm(), course=course)
 
 @app.route("/vote", methods=["POST"])
 def vote():
