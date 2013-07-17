@@ -1,17 +1,20 @@
+{# HI ALYSSA THIS IS A JINJA2 COMMENT :D #}
+
 {% extends 'layout.html' %}
 {% block content %}
 <h3><a href="{{url_for('topics')}}">[all topics]</a>
-{% for topic in topicset %}
-<h1> <a href="{{url_for('topics',topic_name=topic.name)}}">{{topic.name}} </h1>
-{% for course in topic.courses %}
-<table class="table table-bordered table-striped table-hover">
-<tr>
-	<td><b><a href="{{url_for('view_course', course_name=course.name)}}">{{course.name}}</b></td>
-	<td><a href="{{course.url}}">link</a></td>
-	<td>{{course.description}}</td>
-    <td>{% include 'vote.html' %}</td>
-</tr>
-</table>
-{% endfor %}
+{% for topic in topics %}
+    <h1> <a href="{{url_for('topics',topic_name=topic.name)}}">{{topic.name}} </h1>
+    <table class="table table-bordered table-striped table-hover">
+    {% for assoc in topic.get_sorted_topics_courses() %}
+        <tr>
+	    <td><b><a href="{{url_for('view_course', course_name=assoc.course.name)}}">{{assoc.course.name}}</b></td>
+	    <td><a href="{{assoc.course.url}}">link</a></td>
+	    <td>{{assoc.course.description}}</td>
+        <td>{% include 'vote.html' %}</td>
+        <td>{{ assoc.stats.score }} / {{assoc.stats.num_votes}}</td>
+        </tr>
+    {% endfor %}
+    </table>
 {% endfor %}
 {% endblock %}
