@@ -35,6 +35,10 @@ class Course(db.Model):
         self.url = url
         self.description = description
 
+    def associate_topic(self, topic):
+        """creats topics_course and stats object for a new association between courses and topics"""
+        new_topics_course = TopicsCourses(topic = topic, stats = TopicCourseStats())
+        self.topics_courses.append(new_topics_course)
 
 class Topic(db.Model):
     """categories of courses"""
@@ -43,6 +47,15 @@ class Topic(db.Model):
     name = db.Column(db.String(140))
     description = db.Column(db.String(5000))
 
+    @classmethod
+    def get(cls, topic_info):
+        """returns a topic given ID or name.
+        ID can be string or int. returns None if topic can not be found."""
+        try: #to treat topic info as topic.id
+            return Topic.query.get(int(topic_info))
+        except Exception: #treat topic info as topic.name
+            return Topic.query.filter_by(name=topic_info).first()
+
     def get_sorted_topics_courses(self):
         """returns list of topics course objects sorted by the saved on the stats object"""
         return sorted(self.topics_courses, key=lambda course_topic: course_topic.stats.score, reverse=True)
@@ -50,7 +63,7 @@ class Topic(db.Model):
     def __repr__(self):
         return "<Topic %s>" % self.name
 
-    def __init__(self, name):
+    def __init__(self, name, description=""):
         self.name = name
 
     def __cmp__(self, other):
@@ -70,3 +83,7 @@ class TopicCourseStats(db.Model):
 
     def __repr__(self):
         return "<Stats %d / %d>" % (self.score, self.num_votes)
+
+    def __init__(self):
+        self.score = 0
+        self.num_votes = 0

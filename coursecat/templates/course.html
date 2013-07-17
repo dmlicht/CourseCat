@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<hr>
+{% include 'add_topic_form.html' %}
+<div class="row">
+	<div class="span6">
+		<h2><a href="{{course.url}}">{{course.name}}</a></h2>
+	</div>
+	<div class="span6">
+		<h3>description</h3>
+		<p>{{course.description}}</p>
+	</div>
+</div>
+<hr>
+<div class="row">
+    <div class="span12" >
+	<h3>this course has been filed under:</h3>
+	{% for assoc in course.topics_courses %}
+	<h4>{{assoc.topic.name}}</h4>
+    <h5>
+        this course scores {{course.topics_courses[loop.index0].stats.score}} for this topic
+        {% include 'vote.html' %}
+	</h5>
+	{% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+

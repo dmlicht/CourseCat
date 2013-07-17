@@ -32,38 +32,45 @@ def courses():
     form = SubmitForm()
     return render_template('courses.html', form=form, topics=Topic.query.all())
 
-@app.route('/topics')
+@app.route('/topics', methods=['GET', 'POST'])
 def topics():
-    form = SubmitForm()
+    if request.method == 'GET':
+        return display_topics()
+    elif request.method =='POST':
+        return add_topic()
+
+def display_topics():
     topics = Topic.query.all()
     topics.sort()
-    return render_template('topics.html', topics=topics, form=form)
+    return render_template('topics.html', topics=topics, form=SubmitForm())
+
+def add_topic():
+    name = request.form['name']
+    description = request.form['description']
+    new_topic = Topic(name=name, description=description)
+    db.session.add(new_topic)
+    if request.form.get('course_id', False):
+        course = Course.query.get(request.form['course_id'])
+        course.associate_topic(new_topic)
+    print 'gets here?'
+    db.session.commit()
+    return redirect(url_for('topic', topic_name=new_topic.id))
 
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
-    form = SubmitForm()
-    topic = Topic.query.filter_by(name=topic_name).first_or_404() #should only have one
-    return render_template('courses.html', topics=[topic], form=form)
+    topic =  Topic.get(topic_name)
+    if topic:
+        return render_template('courses.html', form=SubmitForm(), topics=[topic])
+    else:
+        pass #TODO handle 404 and other errors
 
-@app.route("/courses/<course_name>", methods = ["GET", "POST"])
-def view_course(course_name):
-    form = SubmitForm()
-    course = Course.query.filter_by(name=course_name).first_or_404()
-    topic = course.topics[0]
-    score_obj = Score.query.filter_by(course_id=course.id, topic_id=topic.id).first()
-    if request.method == "POST":
-        button_pressed = request.form['vote'].split(' ')
-        score_obj = Score.query.filter_by(course=course.name, topic=button_pressed[1]).first()
-        if button_pressed[0] == 'upvote': 
-            score_obj.score += 1
-        elif button_pressed[0] == 'downvote':
-            score_obj.score -= 1
-        else:
-            print "there was a problem :("
-    db.session.commit()
-    scores_all_topics = [Score.query.filter_by(course=course.name, topic=t.name).first().score for t in course.topics]
-    return render_template("course_single.html", course = course, form = form, scores = scores_all_topics)
-
+@app.route("/courses/<course_id>", methods = ["GET"])
+def view_course(course_id):
+    course = Course.query.get(course_id)
+    #I renamed course_single.html -> course.html
+    #we can use plurality of the word distinguish between a single
+    #element or a list
+    return render_template("course.html", form=SubmitForm(), course=course)
 
 @app.route("/vote", methods=["POST"])
 def vote():

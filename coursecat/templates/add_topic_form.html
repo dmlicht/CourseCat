@@ -1,0 +1,9 @@
+<form class="form-search" action="{{url_for('topics')}}" method="POST" >
+    {% if course %} 
+    {# this is to associate a topic with a given course on creation if made from an individual course page #}
+    <input type="hidden" name="course_id" value="{{course.id}}" />
+    {% endif %}
+    <input type="text" name="name" />
+    <input type="text" name="description" />
+    <button type="submit" class="btn btn-success" value="submit">Submit Topic!</button
+</form>
