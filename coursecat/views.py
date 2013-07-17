@@ -1,6 +1,6 @@
 #! usr/local/bin/python
 from coursecat import app, db
-from coursecat.models import Course, Topic, Stats, TopicsCourses
+from coursecat.models import Course, Topic, TopicsCourses
 from flask.ext.wtf import Form, TextField, ValidationError, \
     Required, DataRequired, TextAreaField
 from flask.ext.wtf.html5 import URLField
