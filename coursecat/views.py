@@ -33,7 +33,10 @@ def topics():
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
     topic =  Topic.get(topic_name)
-    return render_template('courses.html', form=SubmitForm(), topics=[topic])
+    if topic:
+        return render_template('courses.html', form=SubmitForm(), topics=[topic])
+    else:
+        pass #TODO handle 404 and other errors
 
 @app.route("/courses/<course_id>", methods = ["GET"])
 def view_course(course_id):
