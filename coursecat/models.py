@@ -56,6 +56,10 @@ class Topic(db.Model):
         except Exception: #treat topic info as topic.name
             return Topic.query.filter_by(name=topic_info).first()
 
+    def associate_course(self, course):
+        new_topics_course = TopicsCourses(course = course, stats=TopicCourseStats())
+        self.topics_courses.append(new_topics_course)
+
     def get_sorted_topics_courses(self):
         """returns list of topics course objects sorted by the saved on the stats object"""
         return sorted(self.topics_courses, key=lambda course_topic: course_topic.stats.score, reverse=True)
