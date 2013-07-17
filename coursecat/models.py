@@ -43,6 +43,14 @@ class Topic(db.Model):
     name = db.Column(db.String(140))
     description = db.Column(db.String(5000))
 
+    def get(topic_info):
+        """returns a topic given ID or name.
+        ID can be string or int. returns None if topic can not be found."""
+        try: #to treat topic info as topic.id
+            return Topic.query.get(int(topic_info))
+        except Exception: #treat topic info as topic.name
+            return Topic.query.filter_by(name=topic_info)
+
     def get_sorted_topics_courses(self):
         """returns list of topics course objects sorted by the saved on the stats object"""
         return sorted(self.topics_courses, key=lambda course_topic: course_topic.stats.score, reverse=True)
