@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }} " rel="stylesheet" media="screen">
-</head>
-<body>
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" media="screen">
     <script src="{{ url_for('static', filename='js/jquery.js') }}" ></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    {# <script src="{{ url_for('static', filename='js/less.js') }}" type='text/javascript></script> #}
+    <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+</head>
+<body>
     <div class="container">
-        <a href="{{url_for('home')}}"><h1>Course Cat</h1></a>
+        <header>
+        <a href="{{url_for('home')}}"><h1><img src="{{url_for('static', filename='img/cat.svg')}}" />Course Cat</h1></a>
+        
         <p class="lead">Welcome to the universe of knowledge!</p>
+        </header>
         </br>   
         {% include 'course_add_form.html' %}
         {% block content %} {% endblock %} 
