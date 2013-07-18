@@ -17,23 +17,25 @@ class SubmitForm(Form):
     def update_topics(cls):
         cls.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])        
 
-#removed init function from submit form because it would crash database initialization
-#This will update the topics listed
-#in the submit form before every request.
 @app.before_request
 def update_form_topics():
     SubmitForm.update_topics()
 
+### HOME PAGE ###
 @app.route('/')
 def home():
     form = SubmitForm()
     return render_template('home.html', courses=Course.query.all(), form=form)
 
+### COURSES PAGE ###
 @app.route('/courses')
 def courses():
     form = SubmitForm()
-    return render_template('courses.html', form=form, topics=Topic.query.all())
+    topics = Topic.query.all()
+    topics.sort()
+    return render_template('courses.html', form=form, topics=topics)
 
+### TOPICS PAGE ###
 @app.route('/topics', methods=['GET', 'POST'])
 def topics():
     if request.method == 'GET':
@@ -58,6 +60,7 @@ def add_topic():
     db.session.commit()
     return redirect(url_for('topic', topic_name=new_topic.id))
 
+### TOPIC-SPECIFIC PAGES ###
 @app.route('/topics/<topic_name>')
 def topic(topic_name):
     topic =  Topic.get(topic_name)
@@ -66,11 +69,13 @@ def topic(topic_name):
     else:
         pass #TODO handle 404 and other errors
 
+### COURSE-SPECIFIC PAGES ###
 @app.route("/courses/<course_id>", methods = ["GET"])
 def view_course(course_id):
     course = Course.query.get(course_id)
     return render_template("course.html", form=SubmitForm(), course=course)
 
+### UPVOTE/DOWNVOTE BUTTONS ###
 @app.route("/vote", methods=["POST"])
 def vote():
     stats_id = request.form['stats_id']
@@ -78,6 +83,7 @@ def vote():
     stats.handle_vote(direction = request.form['vote'])
     return redirect(request.form['submitted_from'])
 
+### PAGE FOR PROCESSING COURSE SUBMISSION FORM ###
 @app.route('/courses/add', methods=["GET","POST"])
 def post_course():
     new_course = Course(name=request.form['name'], url=request.form['url'], description=request.form['description'])

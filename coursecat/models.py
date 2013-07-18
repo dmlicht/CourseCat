@@ -73,9 +73,9 @@ class Topic(db.Model):
         self.description = description
 
     def __cmp__(self, other):
-        if self.name == other.name:
+        if self.name.lower() == other.name.lower():
             return 0
-        elif self.name > other.name:
+        elif self.name.lower() > other.name.lower():
             return 1
         else:
             return -1
