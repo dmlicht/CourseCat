@@ -18,6 +18,7 @@ Werkzeug==0.9.1
 Whoosh==2.4.1
 blinker==1.2
 decorator==3.4.0
+gunicorn==17.5
 itsdangerous==0.21
 python-openid==2.2.5
 pytz==2013b
