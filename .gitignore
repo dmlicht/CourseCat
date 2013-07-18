@@ -8,3 +8,4 @@
 scratch*
 test_cat.py
 ipython_imports.py
+.elasticbeanstalk/
