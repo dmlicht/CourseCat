@@ -40,6 +40,7 @@ class Course(db.Model):
         new_topics_course = TopicsCourses(topic = topic, stats = TopicCourseStats())
         self.topics_courses.append(new_topics_course)
 
+
 class Topic(db.Model):
     """categories of courses"""
     __tablename__ = 'topic'
@@ -69,6 +70,7 @@ class Topic(db.Model):
 
     def __init__(self, name, description=""):
         self.name = name
+        self.description = description
 
     def __cmp__(self, other):
         if self.name == other.name:
@@ -77,6 +79,7 @@ class Topic(db.Model):
             return 1
         else:
             return -1
+
 
 class TopicCourseStats(db.Model):
     __tablename__ = 'topic_course_stats'
