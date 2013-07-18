@@ -12,7 +12,7 @@ class SubmitForm(Form):
     name = TextField('Name', default="Course Name")
     url = URLField('URL', default="Url")
     description = TextAreaField('Description', default="Description")
-    
+
     @classmethod
     def update_topics(cls):
         cls.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])        
@@ -75,10 +75,7 @@ def view_course(course_id):
 def vote():
     stats_id = request.form['stats_id']
     stats = TopicCourseStats.query.filter_by(id=stats_id).first()
-    score_change = 1 if (request.form["vote"] == "up") else -1
-    stats.score += score_change
-    stats.num_votes += 1
-    db.session.commit()
+    stats.handle_vote(direction = request.form['vote'])
     return redirect(request.form['submitted_from'])
 
 @app.route('/courses/add', methods=["GET","POST"])
