@@ -12,15 +12,17 @@ class SubmitForm(Form):
     name = TextField('Name', default="Course Name")
     url = URLField('URL', default="Url")
     description = TextAreaField('Description', default="Description")
-    topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
+    
+    @classmethod
+    def update_topics(cls):
+        cls.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])        
 
-    def __init__(self):
-        super(SubmitForm, self).__init__()
-        self.update_topics()
-        #SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
-
-    def update_topics(self):
-        SubmitForm.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])        
+#removed init function from submit form because it would crash database initialization
+#This will update the topics listed
+#in the submit form before every request.
+@app.before_request
+def update_form_topics():
+    SubmitForm.update_topics()
 
 @app.route('/')
 def home():
