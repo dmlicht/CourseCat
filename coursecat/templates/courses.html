@@ -11,8 +11,8 @@
 	    <td><b><a href="{{url_for('view_course', course_id=assoc.course.id)}}">{{assoc.course.name}}</b></td>
 	    <td><a href="{{assoc.course.url}}">link</a></td>
 	    <td>{{assoc.course.description}}</td>
-        <td style="width: 20%">{% include 'vote.html' %}</td>
-        <td>{{ assoc.stats.get_percent_positive() }} positive / {{assoc.stats.num_votes}} total</td>
+        <td style="width: 15%">{% include 'vote.html' %}</td>
+        <td style"width: 22%">{{ assoc.stats.get_percent_positive() }} positive / {{assoc.stats.num_votes}} total</td>
         </tr>
     {% endfor %}
     </table>
