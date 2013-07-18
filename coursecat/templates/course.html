@@ -19,7 +19,7 @@
 	{% for assoc in course.topics_courses %}
 	<h4>{{assoc.topic.name}}</h4>
     <h5>
-        this course scores {{course.topics_courses[loop.index0].stats.score}} for this topic
+        {{ assoc.stats.get_percent_positive() }} positive ratings, out of {{assoc.stats.num_votes}}
         {% include 'vote.html' %}
 	</h5>
 	{% endfor %}

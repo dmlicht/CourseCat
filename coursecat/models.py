@@ -84,13 +84,37 @@ class Topic(db.Model):
 class TopicCourseStats(db.Model):
     __tablename__ = 'topic_course_stats'
     id = db.Column(db.Integer, primary_key=True)
-    #topics_courses_id = db.Column(db.Integer, db.ForeignKey('topics_courses.id'))
-    score = db.Column(db.Integer)
+    num_upvotes = db.Column(db.Integer)
     num_votes = db.Column(db.Integer)
+    score = db.Column(db.Float)
 
     def __repr__(self):
         return "<Stats %d / %d>" % (self.score, self.num_votes)
 
-    def __init__(self, score=None, num_votes=None):
-        self.score = score or 0
-        self.num_votes = num_votes or 0
+    def __init__(self):
+        self.num_upvotes = 0
+        self.num_votes = 0
+        self.score = 0
+
+    def update_score(self):
+        import math
+        z = 1.96 #95% CI
+        phat = float(self.num_upvotes)/self.num_votes
+        n = self.num_votes
+        self.score = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
+
+    def handle_vote(self, direction):
+        if direction != "up" and direction != "down":
+            raise ValueError('direction must be up or down')
+        if (direction == "up"):
+            self.num_upvotes += 1
+        self.num_votes += 1
+        self.update_score()
+        db.session.commit()
+
+    def get_percent_positive(self):
+        if self.num_votes > 0:
+            return '{:.1%}'.format(float(self.num_upvotes)/self.num_votes)
+        else: 
+            return '0%'
+
