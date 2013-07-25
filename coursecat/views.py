@@ -8,6 +8,7 @@ from flask import render_template, request, redirect, url_for, session
 
 DEFAULT_SCORE = 0
 
+### form to submit new courses
 class SubmitForm(Form):
     name = TextField('Name', default="Course Name")
     url = URLField('URL', default="Url")
@@ -20,6 +21,27 @@ class SubmitForm(Form):
 @app.before_request
 def update_form_topics():
     SubmitForm.update_topics()
+
+
+### form to edit courses
+class CourseEditForm(Form):
+    # def __init__(self, course):
+    #     Form.__init__(self)
+    #     self.name = TextField('Name', default=course.name)
+    #     self.url = URLField('URL', default=course.url)
+    #     self.description = TextAreaField('Description', default=course.description)
+
+    @classmethod
+    def update_topics(cls):
+        cls.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
+
+    @classmethod
+    def customize_form(cls, course):
+        """sets name url and description for form defaults"""
+        cls.name = TextField('Name', default=course.name)
+        cls.url = URLField('URL', default=course.url)
+        cls.description = TextAreaField('Description', default=course.description)
+
 
 ### HOME PAGE ###
 @app.route('/')
@@ -82,6 +104,22 @@ def vote():
     stats = TopicCourseStats.query.filter_by(id=stats_id).first()
     stats.handle_vote(direction = request.form['vote'])
     return redirect(request.form['submitted_from'])
+
+### BUTTON TO EDIT A COURSE ###
+@app.route("/edit/<course_id>", methods=["GET","POST"])
+def edit(course_id):
+    course = Course.query.get(course_id)
+    CourseEditForm.customize_form(course)
+    form = CourseEditForm()
+    return render_template("edit.html", form=form, course=course)
+
+### PAGE FOR SUBMITTING COURSE EDITS ###
+@app.route("/courses/edit", methods=["GET", "POST"])
+def edit_course():
+    course = Course.query.get(request.form['course_id'])
+    course.update(new_name = request.form['name'], new_url=request.form['url'], new_description=request.form['description'])
+    db.session.commit()
+    return redirect(url_for('view_course',course_id=course.id))
 
 ### PAGE FOR PROCESSING COURSE SUBMISSION FORM ###
 @app.route('/courses/add', methods=["GET","POST"])

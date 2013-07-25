@@ -40,6 +40,11 @@ class Course(db.Model):
         new_topics_course = TopicsCourses(topic = topic, stats = TopicCourseStats())
         self.topics_courses.append(new_topics_course)
 
+    def update(self, new_name, new_url, new_description):
+        self.name = new_name
+        self.url = new_url
+        self.description = new_description
+
 
 class Topic(db.Model):
     """categories of courses"""

@@ -1,8 +1,9 @@
-<form class="form-search well" action="/courses/add" method="POST">
-   	<legend>Suggest a course!</legend>
+<form class="form-search well" action="/courses/edit" method="POST">
+   	<legend>Edit this course</legend>
    	{{form.name}}
    	{{form.url}}
     {{form.description}}
+    <input type="hidden" name="course_id" value="{{course.id}}" />
     <label class="control-label" for="select01">select a topic</label>
     {{form.topics}}
     <button name="action_save" type="submit" class="btn btn-success">submit!</button>
