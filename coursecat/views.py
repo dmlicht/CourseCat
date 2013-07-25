@@ -32,10 +32,6 @@ class CourseEditForm(Form):
     #     self.description = TextAreaField('Description', default=course.description)
 
     @classmethod
-    def update_topics(cls):
-        cls.topics = SelectField(u'Topics', choices=[(t.id, t.name) for t in Topic.query.all()])
-
-    @classmethod
     def customize_form(cls, course):
         """sets name url and description for form defaults"""
         cls.name = TextField('Name', default=course.name)
