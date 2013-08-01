@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h3><a href="{{url_for('courses')}}">[expand to show courses]</a></h3>
+{# <h3><a href="{{url_for('courses')}}">[expand to show courses]</a></h3> #}
 {% include 'add_topic_form.html' %}
 <table class="table table-bordered table-striped table-hover">
     {% for topic in topics %}

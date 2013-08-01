@@ -26,13 +26,11 @@ def update_form_topics():
 
 @app.route('/')
 def home():
-    form = SubmitForm()
-    return render_template('home.html', courses=Course.query.all(), form=form)
+    return render_template('home.html', courses=Course.query.all(), course_add_form=SubmitForm())
 
 @app.route('/courses')
 def courses():
-    form = SubmitForm()
-    return render_template('courses.html', form=form, topics=Topic.query.all())
+    return render_template('courses.html', course_add_form=SubmitForm(), topics=Topic.query.all())
 
 @app.route('/topics', methods=['GET', 'POST'])
 def topics():
@@ -44,7 +42,7 @@ def topics():
 def display_topics():
     topics = Topic.query.all()
     topics.sort()
-    return render_template('topics.html', topics=topics, form=SubmitForm())
+    return render_template('topics.html', topics=topics)
 
 def add_topic():
     name = request.form['name']
@@ -54,7 +52,6 @@ def add_topic():
     if request.form.get('course_id', False):
         course = Course.query.get(request.form['course_id'])
         course.associate_topic(new_topic)
-    print 'gets here?'
     db.session.commit()
     return redirect(url_for('topic', topic_name=new_topic.id))
 
@@ -62,14 +59,14 @@ def add_topic():
 def topic(topic_name):
     topic =  Topic.get(topic_name)
     if topic:
-        return render_template('courses.html', form=SubmitForm(), topics=[topic])
+        return render_template('courses.html', course_add_form=SubmitForm(), topics=[topic])
     else:
         pass #TODO handle 404 and other errors
 
 @app.route("/courses/<course_id>", methods = ["GET"])
 def view_course(course_id):
     course = Course.query.get(course_id)
-    return render_template("course.html", form=SubmitForm(), course=course)
+    return render_template("course.html", course_add_form=SubmitForm(), course=course)
 
 @app.route("/vote", methods=["POST"])
 def vote():

@@ -1,8 +1,12 @@
 <form class="form-search well" action="/courses/add" method="POST">
    	<legend>Suggest a course!</legend>
-   	{{form.name}}
-   	{{form.url}}
-    {{form.description}}
-    {{form.topics}}
+   	{{course_add_form.name}}
+   	{{course_add_form.url}}
+    {{course_add_form.description}}
+    {% if topics == 1 %}
+        <input type="hidden" name="topic_id" value="{{topic.id}}" />
+    {% else %}
+        {{course_add_form.topics}}
+    {% endif %}
     <button name="action_save" type="submit" class="btn btn-success">submit!</button>
 </form>
