@@ -9,13 +9,15 @@ class TopicsCourses(db.Model):
     via .course, .topic, .stats, respectively"""
 
     __tablename__ = 'topics_courses'
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
-    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), primary_key=True)
-    stats_id = db.Column(db.Integer, db.ForeignKey('topic_course_stats.id'), primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False, primary_key=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), primary_key=True, nullable=False)
+    stats_id = db.Column(db.Integer, db.ForeignKey('stats.id'), nullable=False)
     course = db.relationship("Course", backref="topics_courses")
     topic = db.relationship("Topic", backref="topics_courses")
-    stats = db.relationship("TopicCourseStats", backref="topics_courses")
+    stats = db.relationship("Stats", backref="topics_courses")
 
+    def __init__(self):
+        self.stats = Stats()
 
 class Course(db.Model):
     __tablename__ = 'course'
@@ -37,7 +39,7 @@ class Course(db.Model):
 
     def associate_topic(self, topic):
         """creates topics_course and stats object for a new association between courses and topics"""
-        new_topics_course = TopicsCourses(topic = topic, stats = TopicCourseStats())
+        new_topics_course = TopicsCourses(topic = topic, stats = Stats())
         self.topics_courses.append(new_topics_course)
 
 
@@ -58,7 +60,7 @@ class Topic(db.Model):
             return Topic.query.filter_by(name=topic_info).first()
 
     def associate_course(self, course):
-        new_topics_course = TopicsCourses(course = course, stats=TopicCourseStats())
+        new_topics_course = TopicsCourses(course = course, stats=Stats())
         self.topics_courses.append(new_topics_course)
 
     def get_sorted_topics_courses(self):
@@ -81,9 +83,10 @@ class Topic(db.Model):
             return -1
 
 
-class TopicCourseStats(db.Model):
-    __tablename__ = 'topic_course_stats'
+class Stats(db.Model):
+    __tablename__ = 'stats'
     id = db.Column(db.Integer, primary_key=True)
+    votes = db.relationship("Vote", backref="stats")
     num_upvotes = db.Column(db.Integer)
     num_votes = db.Column(db.Integer)
     score = db.Column(db.Float)
@@ -118,3 +121,22 @@ class TopicCourseStats(db.Model):
         else: 
             return '0%'
 
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140))
+    email = db.Column(db.String(140))
+    votes = db.relationship('Vote', backref='user')
+
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+class Vote(db.Model):
+    stats_id = db.Column(db.Integer, db.ForeignKey('stats.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    value = db.Column(db.Integer)
+
+    @db.validates('value')
+    def validate_value(self, key, value):
+        assert (0 <= value < 1)
