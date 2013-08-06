@@ -7,6 +7,9 @@ app.config.from_object('config')
 
 db = SQLAlchemy(app)
 
+def init_db():
+    db.create_all()
+
 from coursecat import views
 
 ## we had to run the following in an interpreter:
