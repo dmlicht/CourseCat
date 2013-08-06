@@ -56,7 +56,6 @@ class TestDb:
             self.add_commit(new_topics_courses)
         db.session.rollback()
 
-
     def test_create_topics_courses_with_topic_and_course(self, topic, course):
         new_topics_courses = TopicsCourses()
         new_topics_courses.topic = topic
@@ -64,15 +63,68 @@ class TestDb:
         new_topics_courses.stats = Stats()
         self.add_commit(new_topics_courses)
 
+    def test_course_associate(self, topic, course):
+        course.associate(topic)
+        db.session.commit()
+
+    def test_topic_associate(self, topic, course):
+        topic.associate(course)
+        db.session.commit()
+
     def test_create_stats(self):
         assert Stats()
+
+    def test_create_user(self):
+        self.make_user()
+
+    def make_user(self):
+        new_user = User("name", "email")
+        self.add_commit(new_user)
+        return new_user
+
+    @pytest.fixture
+    def user(self):
+        return self.make_user()
+
+    def test_access_stats(self, topic, course):
+        topic.associate(course)
+        assert isinstance(topic.topics_courses[0].stats, Stats)
+
+    def test_create_vote_val_1(self, user, topic, course):
+        topic.associate(course)
+        stats = topic.topics_courses[0].stats
+        user.do_vote(stats, 1)
+        db.session.commit()
+
+    def test_create_vote_val_0(self, user, topic, course):
+        topic.associate(course)
+        stats = topic.topics_courses[0].stats
+        user.do_vote(stats, 0)
+        db.session.commit()
+
+    def test_create_vote_bad_val_raises_error(self, user, topic, course):
+        topic.associate(course)
+        stats = topic.topics_courses[0].stats
+        vals = [-1, -5, 2, 3, 7, 1000]
+        for val in vals:
+            with pytest.raises(Exception):
+                user.do_vote(stats, val)
+                db.session.commit()
+            db.session.rollback()
+
+    def test_bad_get_vote(self, user, topic, course):
+        topic.associate(course)
+        with pytest.raises(TypeError):
+            user.get_vote(topic)
+
+    def test_overwrite_vote(self, user, topic, course):
+        topic.associate(course)
+        stats = topic.topics_courses[0].stats
+        user.do_vote(stats, 1)
+        db.session.commit()
+        user.do_vote(stats, 0)
+        db.session.commit()
 
     #def test_associate_course_to_topic(self, topic, course):
     #    course.associate_topic(topic)
 
-    #def test_create_user(self):
-    #    new_user = User("name", "email")
-    #    self.add_commit(new_user)
-
-    def test_create_vote(self):
-        assert Vote()
