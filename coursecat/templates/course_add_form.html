@@ -6,6 +6,7 @@
     {% if topics == 1 %}
         <input type="hidden" name="topic_id" value="{{topic.id}}" />
     {% else %}
+        <label class="control-label" for="select01">select a topic</label>
         {{course_add_form.topics}}
     {% endif %}
     <button name="action_save" type="submit" class="btn btn-success">submit!</button>

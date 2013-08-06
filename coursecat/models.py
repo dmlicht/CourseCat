@@ -45,6 +45,11 @@ class Course(db.Model):
         self.topics_courses.append(new_topics_courses)
         return new_topics_courses
 
+    def update(self, new_name, new_url, new_description):
+        self.name = new_name
+        self.url = new_url
+        self.description = new_description
+
 
 class Topic(db.Model):
     """categories of courses"""
@@ -82,9 +87,9 @@ class Topic(db.Model):
         self.description = description
 
     def __cmp__(self, other):
-        if self.name == other.name:
+        if self.name.lower() == other.name.lower():
             return 0
-        elif self.name > other.name:
+        elif self.name.lower() > other.name.lower():
             return 1
         else:
             return -1

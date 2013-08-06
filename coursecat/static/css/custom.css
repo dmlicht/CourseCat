@@ -41,12 +41,13 @@ form table legend {
 body footer#footer {
     background: #333;
     color: #fff;
-    font-size: 1.6em;
-    line-height: 1.7em;
+    font-size: 1.2em;
+    line-height: 1.5em;
     padding: 50px 0; 
     background-image: url("../static/img/robots.png");
     border-top: 5px solid #ccc;
     margin-top: 50px;
+    text-align: center;
 }
 
 footer a{
@@ -54,4 +55,7 @@ footer a{
 }
 
 footer .container{
+}
+form.form-search {
+    margin-bottom: 100px;
 }

@@ -1,0 +1,8 @@
+<form class="form-search well" action="/courses/edit" method="POST">
+   	<legend>Edit this course</legend>
+   	{{form.name}}
+   	{{form.url}}
+    {{form.description}}
+    <input type="hidden" name="course_id" value="{{course.id}}" />
+    <button name="action_save" type="submit" class="btn btn-success">submit!</button>
+</form>
