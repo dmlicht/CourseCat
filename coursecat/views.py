@@ -71,7 +71,7 @@ def view_course(course_id):
 @app.route("/vote", methods=["POST"])
 def vote():
     stats_id = request.form['stats_id']
-    stats = TopicCourseStats.query.filter_by(id=stats_id).first()
+    stats = Stats.query.filter_by(id=stats_id).first()
     stats.handle_vote(direction = request.form['vote'])
     return redirect(request.form['submitted_from'])
 

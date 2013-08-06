@@ -93,16 +93,16 @@ def course_topic_test_fill_db():
     tc4 = TopicsCourses()
     tc.course = c
     tc.topic = t
-    tc.stats = TopicCourseStats(num_upvotes=100, num_votes=1000)
+    tc.stats = Stats(num_upvotes=100, num_votes=1000)
     tc2.course = c2
     tc2.topic = t
-    tc2.stats = TopicCourseStats(num_upvotes=10, num_votes=100)
+    tc2.stats = Stats(num_upvotes=10, num_votes=100)
     tc3.course = c3
     tc3.topic = t
-    tc3.stats = TopicCourseStats(num_upvotes=50, num_votes=50)
+    tc3.stats = Stats(num_upvotes=50, num_votes=50)
     tc4.topic = t2
     tc4.course = c
-    tc4.stats = TopicCourseStats(num_upvotes=500, num_votes=501)
+    tc4.stats = Stats(num_upvotes=500, num_votes=501)
     db.session.add(tc)
     db.session.add(tc2)
     db.session.add(tc3)
