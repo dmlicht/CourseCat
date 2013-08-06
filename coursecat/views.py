@@ -25,12 +25,6 @@ def update_form_topics():
 
 ### form to edit courses
 class CourseEditForm(Form):
-    # def __init__(self, course):
-    #     Form.__init__(self)
-    #     self.name = TextField('Name', default=course.name)
-    #     self.url = URLField('URL', default=course.url)
-    #     self.description = TextAreaField('Description', default=course.description)
-
     @classmethod
     def customize_form(cls, course):
         """sets name url and description for form defaults"""
@@ -103,8 +97,7 @@ def vote():
 def edit(course_id):
     course = Course.query.get(course_id)
     CourseEditForm.customize_form(course)
-    form = CourseEditForm()
-    return render_template("edit.html", form=form, course=course)
+    return render_template("course.html", course_edit_form=CourseEditForm(), course=course)
 
 ### PAGE FOR SUBMITTING COURSE EDITS ###
 @app.route("/courses/edit", methods=["GET", "POST"])

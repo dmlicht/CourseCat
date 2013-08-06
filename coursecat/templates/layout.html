@@ -20,6 +20,7 @@
         </header>
         </br>   
         {% if course_add_form %}{% include 'course_add_form.html' %}{% endif %}
+        {% if course_edit_form %} {% include 'course_edit_form.html' %} {% endif %}
         {% block content %} {% endblock %} 
     </div>
         {% include 'footer.html' %}
