@@ -4,6 +4,7 @@
 *~
 *.db
 *.swp
+*.swo
 .idea/
 scratch*
 test_cat.py
