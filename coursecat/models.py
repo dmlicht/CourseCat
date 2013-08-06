@@ -37,10 +37,13 @@ class Course(db.Model):
         self.url = url
         self.description = description
 
-    def associate_topic(self, topic):
-        """creates topics_course and stats object for a new association between courses and topics"""
-        new_topics_course = TopicsCourses(topic = topic, stats = Stats())
-        self.topics_courses.append(new_topics_course)
+    def associate(self, topic):
+        """returns newly created topics_courses connected this course with given topic
+        Also creates and adds a reference to a stats object from the topics_course"""
+        new_topics_courses = TopicsCourses()
+        new_topics_courses.topic = topic
+        self.topics_courses.append(new_topics_courses)
+        return new_topics_courses
 
 
 class Topic(db.Model):
@@ -59,9 +62,13 @@ class Topic(db.Model):
         except Exception: #treat topic info as topic.name
             return Topic.query.filter_by(name=topic_info).first()
 
-    def associate_course(self, course):
-        new_topics_course = TopicsCourses(course = course, stats=Stats())
-        self.topics_courses.append(new_topics_course)
+    def associate(self, course):
+        """returns newly created topics_courses connected this topic with given course
+        Also creates and adds a reference to a stats object from the topics_course"""
+        new_topics_courses = TopicsCourses()
+        new_topics_courses.course = course
+        self.topics_courses.append(new_topics_courses)
+        return new_topics_courses
 
     def get_sorted_topics_courses(self):
         """returns list of topics course objects sorted by the saved on the stats object"""
@@ -132,6 +139,28 @@ class User(db.Model):
         self.name = name
         self.email = email
 
+    def do_vote(self, stats, vote_val):
+        """returns vote objects
+        if vote already exists between user and stats entry, it will be updated with new given vote val and date
+        if vote does not exist one will be instantiated with current user, given stats entry and given vote value"""
+        vote = self.get_vote(stats)
+        if vote is None:
+            vote = Vote()
+        vote.user = self
+        vote.stats = stats
+        vote.value = vote_val
+        return vote
+
+    #MAY BE INEFFICIENT
+    def get_vote(self, stats):
+        """returns a vote object connected to user and stats arguments
+        returns None if there is no existing vote
+        raise type error if argument is wrong type"""
+        if not isinstance(stats, Stats):
+            raise TypeError
+        return Vote.query.filter_by(user_id=self.id, stats_id=stats.id).first()
+
+
 class Vote(db.Model):
     stats_id = db.Column(db.Integer, db.ForeignKey('stats.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -139,4 +168,4 @@ class Vote(db.Model):
 
     @db.validates('value')
     def validate_value(self, key, value):
-        assert (0 <= value < 1)
+        assert (0 <= value <= 1)
