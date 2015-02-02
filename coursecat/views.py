@@ -1,8 +1,11 @@
 #! usr/local/bin/python
 from coursecat import app, db
 from coursecat.models import Course, Topic, TopicsCourses, Stats
-from flask.ext.wtf import Form, TextField, ValidationError, \
-    Required, DataRequired, TextAreaField, SelectField
+db.create_all()
+db.session.commit()
+from flask.ext.wtf import Form
+from wtforms import TextField, ValidationError, TextAreaField, SelectField
+from wtforms.validators import Required, DataRequired
 from flask.ext.wtf.html5 import URLField
 from flask import render_template, request, redirect, url_for, session
 
