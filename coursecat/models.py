@@ -37,7 +37,7 @@ class Course(db.Model):
         self.url = url
         self.description = description
 
-    def associate(self, topic):
+    def associate_topic(self, topic):
         """returns newly created topics_courses connected this course with given topic
         Also creates and adds a reference to a stats object from the topics_course"""
         new_topics_courses = TopicsCourses()
